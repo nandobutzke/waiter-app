@@ -1,17 +1,17 @@
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Header from './components/Header';
-import Orders from './components/Orders';
+import { BrowserRouter } from 'react-router-dom';
+
 import { GlobalStyles } from './styles/GlobalStyles';
+import Router from './Router';
 
 export default function App() {
   return (
-    <>
+    <BrowserRouter>
       <GlobalStyles />
-      <Header />
-      <Orders />
+      <Router />
       <ToastContainer position="bottom-center" />
-    </>
+    </BrowserRouter>
   );
 }

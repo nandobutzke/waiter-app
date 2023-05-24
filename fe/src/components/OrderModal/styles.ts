@@ -1,6 +1,30 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
-export const Overlay = styled.div`
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
+
+const scaleIn = keyframes`
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+`;
+
+const scaleOut = keyframes`
+  from { transform: scale(1); ;}
+  to { transform: scale(0); }
+`;
+
+interface ModalProps {
+  isLeaving: boolean;
+}
+
+export const Overlay = styled.div<ModalProps>`
   width: 100%;
   left: 0px;
   top: 0px;
@@ -9,17 +33,23 @@ export const Overlay = styled.div`
   position: fixed;
   bottom: 0px;
   right: 0px;
+  animation: ${fadeIn} 0.3s forwards;
+
+  ${({ isLeaving }) => isLeaving && css` animation: ${fadeOut} 0.3s forwards; `}
 
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const ModalBody = styled.div`
+export const ModalBody = styled.div<ModalProps>`
   background-color: #fff;
   width: 480px;
   padding: 32px;
   border-radius: 8px;
+  animation: ${scaleIn} 0.3s forwards;
+
+  ${({ isLeaving }) => isLeaving && css` animation: ${scaleOut} 0.3s forwards; `}
 
   header {
     display: flex;

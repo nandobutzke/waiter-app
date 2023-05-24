@@ -3,6 +3,7 @@ import closeIcon from '../../assets/images/close-icon.svg';
 import { Order } from '../../types/Order';
 import formatCurrency from '../../utils/formatCurrency';
 import { useEffect } from 'react';
+import useAnimatedUnmount from '../../hooks/useAnimatedUnmount';
 
 interface OrderModalProps {
   visible: boolean,
@@ -14,6 +15,8 @@ interface OrderModalProps {
 }
 
 export default function OrderModal({ visible, order, onClose, isLoading, onCancelOrder, onChangeOrderStatus }: OrderModalProps) {
+  const { shouldRender, animatedRefElement } = useAnimatedUnmount(visible);
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
@@ -26,17 +29,20 @@ export default function OrderModal({ visible, order, onClose, isLoading, onCance
     return () => document.removeEventListener('keydown', onKeyDown);
   }, []);
 
-  if (!visible || !order) {
+  if (!shouldRender) {
     return null;
   }
 
-  const total = order.products.reduce((total, { quantity, product }) => {
-    return total + product.price * quantity;
-  }, 0);
+  let total = 0;
+  if (order) {
+    total = order.products.reduce((total, { quantity, product }) => {
+      return total + product.price * quantity;
+    }, 0);
+  }
 
   return (
-    <Overlay>
-      <ModalBody>
+    <Overlay isLeaving={!visible} ref={animatedRefElement}>
+      <ModalBody isLeaving={!visible}>
         <header>
           <strong>Mesa {order?.table}</strong>
           <button type="button" onClick={onClose}>
@@ -48,14 +54,14 @@ export default function OrderModal({ visible, order, onClose, isLoading, onCance
           <small>Status do pedido</small>
           <div>
             <span>
-              {order.status === 'WAITING' && '🕑'}
-              {order.status === 'IN_PRODUCTION' && '🧑‍🍳'}
-              {order.status === 'DONE' && '✅'}
+              {order?.status === 'WAITING' && '🕑'}
+              {order?.status === 'IN_PRODUCTION' && '🧑‍🍳'}
+              {order?.status === 'DONE' && '✅'}
             </span>
             <strong>
-              {order.status === 'WAITING' && 'Fila de espera'}
-              {order.status === 'IN_PRODUCTION' && '🧑Em produção'}
-              {order.status === 'DONE' && 'Pronto!'}
+              {order?.status === 'WAITING' && 'Fila de espera'}
+              {order?.status === 'IN_PRODUCTION' && '🧑Em produção'}
+              {order?.status === 'DONE' && 'Pronto!'}
             </strong>
           </div>
         </div>
@@ -64,7 +70,7 @@ export default function OrderModal({ visible, order, onClose, isLoading, onCance
           <strong className="items-container-title">Itens</strong>
 
           <div className="order-items">
-            {order.products.map(({ _id, product, quantity }) => (
+            {order?.products.map(({ _id, product, quantity }) => (
               <div className="item" key={_id}>
                 <img
                   src={`http://localhost:3001/uploads/${product.imagePath}`}
@@ -90,7 +96,7 @@ export default function OrderModal({ visible, order, onClose, isLoading, onCance
 
         <Actions>
 
-          {order.status !== 'DONE' && (
+          {order?.status !== 'DONE' && (
             <button
               type="button"
               className="primary"
@@ -98,12 +104,12 @@ export default function OrderModal({ visible, order, onClose, isLoading, onCance
               onClick={() => onChangeOrderStatus()}
             >
               <span>
-                {order.status === 'WAITING' && '🧑‍🍳'}
-                {order.status === 'IN_PRODUCTION' && '✅'}
+                {order?.status === 'WAITING' && '🧑‍🍳'}
+                {order?.status === 'IN_PRODUCTION' && '✅'}
               </span>
               <strong>
-                {order.status === 'WAITING' && 'Iniciar Produção'}
-                {order.status === 'IN_PRODUCTION' && 'Concluir Pedido'}
+                {order?.status === 'WAITING' && 'Iniciar Produção'}
+                {order?.status === 'IN_PRODUCTION' && 'Concluir Pedido'}
               </strong>
             </button>
           )}

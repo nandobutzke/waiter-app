@@ -11,11 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOrder = void 0;
 const Order_1 = require("../../models/Order");
+const index_1 = require("../../../index");
 function createOrder(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { table, products } = req.body;
             const order = yield Order_1.Order.create({ table, products });
+            const orderDetails = yield order.populate('products.product');
+            index_1.io.emit('orders@new', orderDetails);
             res.json(order);
         }
         catch (_a) {

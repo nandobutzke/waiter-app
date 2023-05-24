@@ -38,6 +38,7 @@ export const OrdersContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    outline: none;
 
     & + button {
       margin-top: 24px;
