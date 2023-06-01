@@ -1,11 +1,16 @@
 import { useRoutes } from 'react-router-dom';
-import Home from './pages/Home';
+import Orders from './pages/Orders';
+import Dashboard from './pages/Dashboard';
 
 export default function Router() {
   const router = useRoutes([
     {
       path: '/',
-      element: <Home />,
+      element: <Orders />,
+    },
+    {
+      path: '/admin',
+      element: <Dashboard />,
     }
   ]);
 

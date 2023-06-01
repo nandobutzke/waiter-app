@@ -6,6 +6,11 @@ export const Container = styled.header`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  svg {
+    margin-right: 24px;
+    cursor: pointer;
+  }
 `;
 
 export const Content = styled.div`
